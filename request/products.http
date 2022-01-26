@@ -1,14 +1,15 @@
  @api = http://localhost:8000/productos
 
+### Obtener todos los productos
 GET {{ api }}
 
-###
+### Crear un producto
 POST {{ api }}
 Content-type: application/json
 
 {
-     "sapcode": 1999,
-    "name": "Producto Nuevo2",
+     "sapcode": 21999,
+    "name": "Producto Nuevo3",
     "presentation": "GARDEN HOUSE GARCINOL MAX COM X301",
     "laboratorio": "GARDEN HOUSE1",
     "droga": "GARCINIA CAMBOGIA+ASOC.2",
@@ -17,5 +18,27 @@ Content-type: application/json
     "precio": 323.87
 }
 
-###
-GET {{ api }}/73867
+### Obtener un producto
+GET {{ api }}/73062
+
+### Borrar un producto
+DELETE {{ api }}/21999
+
+### Obtener total de Productos
+GET {{ api }}/total
+
+### Actualizar un producto
+PUT {{ api }}/73062
+Content-type: application/json
+
+{
+    "sapcode": 12,
+    "name": "Producto De nuevo",
+    "presentation": "GARDEN HOUSE GARCINOL MAX COM X301",
+    "laboratorio": "GARDEN HOUSE1",
+    "droga": "GARCINIA CAMBOGIA+ASOC.2",
+    "tucuman": 8,
+    "salta": 3,
+    "chaco": 4,
+    "precio": 300.87
+}

@@ -58,33 +58,80 @@ export const newProduct = async (req, res) => {
    res.send(err.message);
  }
 };
+/* Contador de Productos */
+export const getTotalProducts = async (req, res) => {
+  try {
+    const pool = await getConnection();
+    const result = await pool
+      .request()
+      .query(queries.getTotalProducts);
+    res.json({"total":result.recordset[0]['']});
+  } catch (err) {
+    res.status(500)
+      res.send(err.message);
+  }
+};
 /* Detalle de Producto */
-export const getProductById = async (req, res) => {
+export const getProductBySapcode = async (req, res) => {
   const { id } = req.params 
  
   const pool = await getConnection()
-  const result = await pool.request().input('sapcode', id).query(queries.getProductById)
+  const result = await pool.request().input('sapcode', id).query(queries.getProductBySapcode)
 
   res.json(result.recordset[0]);
 };
-/* Editar Producto */
-export const editProduct = async (req, res) => {
-  const pool = await getConnection();
-  const result = await pool
-    .request()
-    .query("select * from [Cofaral].[dbo].[Productos]");
-  console.log(result);
-
-  res.json(result.recordset);
-};
 /* Eliminar producto */
-export const deleteProduct = async (req, res) => {
-  const pool = await getConnection();
+export const deleteProductBySapcode = async (req, res) => {
+   const { id } = req.params;
 
-  const result = await pool
-    .request()
-    .query("select * from [Cofaral].[dbo].[Productos]");
-  console.log(result);
+   const pool = await getConnection();
+   const result = await pool
+     .request()
+     .input("sapcode", id)
+     .query(queries.deleteProductBySapcode);
 
-  res.json(result.recordset);
+  res.sendStatus(204);
 };
+/* Editar Producto */
+export const updateProductBySapcode = async (req, res) => {
+  const { name, presentation, laboratorio, droga, tucuman, salta, chaco, precio, sapcode } = req.body;
+  const { id } = req.params;
+
+
+  if (!name || !precio) {
+    return res.status(400).json({ msg: "Por favor llena los campos" });
+  }
+
+  try {
+    const pool = await getConnection();
+
+    await pool
+      .request()
+      .input("sapcode", sql.Int, id)
+      .input("name", sql.VarChar, name)
+      .input("presentation", sql.VarChar, presentation)
+      .input("laboratorio", sql.VarChar, laboratorio)
+      .input("droga", sql.VarChar, droga)
+      .input("tucuman", sql.Int, tucuman)
+      .input("salta", sql.Int, salta)
+      .input("chaco", sql.Int, chaco)
+      .input("precio", sql.Decimal(10, 2), precio)
+      .query(queries.updateProductBySapcode);
+
+    res.json({
+      sapcode,
+      name,
+      presentation,
+      laboratorio,
+      droga,
+      tucuman,
+      salta,
+      chaco,
+      precio,
+    });
+  } catch (err) {
+    res.status(500);
+    res.send(err.message);
+  }
+};
+
