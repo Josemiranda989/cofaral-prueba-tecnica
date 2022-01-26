@@ -5,6 +5,7 @@ import {
   getProductBySapcode,
   getProducts,
   getTotalProducts,
+  getTotalProductsByLaboratory,
   newProduct,
   updateProductBySapcode,
 } from "../controllers/products.controller";
@@ -14,6 +15,8 @@ const router = Router();
 router.get("/productos", getProducts);
 
 router.post("/productos", newProduct);
+
+router.get("/productos/productos-por-laboratorio", getTotalProductsByLaboratory);
 
 router.get("/productos/total", getTotalProducts);
 
