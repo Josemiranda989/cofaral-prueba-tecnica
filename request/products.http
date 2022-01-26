@@ -1,0 +1,21 @@
+ @api = http://localhost:8000/productos
+
+GET {{ api }}
+
+###
+POST {{ api }}
+Content-type: application/json
+
+{
+     "sapcode": 1999,
+    "name": "Producto Nuevo2",
+    "presentation": "GARDEN HOUSE GARCINOL MAX COM X301",
+    "laboratorio": "GARDEN HOUSE1",
+    "droga": "GARCINIA CAMBOGIA+ASOC.2",
+    "salta": 3,
+    "chaco": 4,
+    "precio": 323.87
+}
+
+###
+GET {{ api }}/73867

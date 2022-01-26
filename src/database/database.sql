@@ -1,4 +1,8 @@
-CREATE DATABASE Cofaral use Cofaral Declare @JSON varchar(max)
+CREATE DATABASE Cofaral
+
+use Cofaral
+
+Declare @JSON varchar(max)
 SELECT
     @JSON = Bulkcolumn
 FROM
@@ -18,5 +22,5 @@ FROM
         [tucuman] int,
         [salta] int,
         [chaco] int,
-        [precio] nvarchar
+        [precio] decimal(10, 2)
     )
