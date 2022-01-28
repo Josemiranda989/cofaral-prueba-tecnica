@@ -1,5 +1,4 @@
-import { check } from 'express-validator'
-import { validateResult } from '../helpers/validateHelper';
+import { check } from "express-validator";
 
 //sapcode, name, presentation, laboratorio, droga, precio;
 const validateCreate = [
@@ -18,7 +17,9 @@ const validateCreate = [
     .withMessage("El precio")
     .bail()
     .isNumeric()
-        .withMessage("El sapcode debe ser numerico")
+    .withMessage("El sapcode debe ser numerico"),
 ];
 
-export default validateCreate
+
+
+export default validateCreate;

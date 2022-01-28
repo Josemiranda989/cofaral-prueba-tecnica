@@ -28,9 +28,6 @@ export const newProduct = async (req, res) => {
       errors: resultValidation.mapped()
     })
   }
-/*   if (!sapcode || !name || !precio) {
-    return res.status(400).json({ msg: "Por favor llena los campos" });
-  } */
 
   if (!tucuman) tucuman = 0;
   if (!salta) salta = 0;
@@ -106,6 +103,7 @@ export const deleteProductBySapcode = async (req, res) => {
 };
 /* Editar Producto */
 export const updateProductBySapcode = async (req, res) => {
+  const resultValidation = validationResult(req);
   const {
     name,
     presentation,
@@ -118,8 +116,10 @@ export const updateProductBySapcode = async (req, res) => {
   } = req.body;
   const { id } = req.params;
 
-  if (!name || !precio) {
-    return res.status(400).json({ msg: "Por favor llena los campos" });
+  if (resultValidation.errors.length > 0) {
+    return res.status(400).json({
+      errors: resultValidation.mapped(),
+    });
   }
 
   try {

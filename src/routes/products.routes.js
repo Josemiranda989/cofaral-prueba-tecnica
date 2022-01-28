@@ -1,5 +1,6 @@
 import { Router } from "express";
-import validateCreate from "../middlewares/products"
+import validateCreate from "../middlewares/createProduct"
+import validateUpdate from "../middlewares/updateProduct"
 
 import {
   deleteProductBySapcode,
@@ -31,6 +32,6 @@ router.get("/productos/:id", getProductBySapcode);
 router.delete("/productos/:id", deleteProductBySapcode);
 
 /* Actualizar producto http://localhost:3000/productos/:id */
-router.put("/productos/:id", updateProductBySapcode);
+router.put("/productos/:id", validateUpdate, updateProductBySapcode);
 
 export default router;

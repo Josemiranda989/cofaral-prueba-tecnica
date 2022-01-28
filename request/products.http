@@ -8,7 +8,7 @@ POST {{ api }}
 Content-type: application/json
 
 {
-   
+    "sapcode": 99,
     "name": "Producto Nuevo",
     "presentation": "GARDEN HOUSE GARCINOL MAX COM X301",
     "laboratorio": "GARDEN HOUSE1",
