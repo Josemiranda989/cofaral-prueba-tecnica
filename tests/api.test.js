@@ -138,17 +138,3 @@ describe("GET /productos/productos-por-laboratorio", () => {
     expect(response.body).toBeInstanceOf(Object);
   });
 });
-
-/* Borrar un producto */
-/* describe("DELETE /productos/:id", () => {
-  //Debe responder codigo estado 200
-  test("Debe devolver el codigo status 204", async (done) => {
-    const response = await request(app).delete("/productos/69160").send();
-    expect(response.statusCode).toBe(204);
-  });
-  //Debe devolver un JSON
-  test("Debe devolver un objeto", async () => {    
-    const response = await request(app).delete("/productos/999").send();
-    expect(response.body).toBeInstanceOf(Object);
-  });
-}); */
