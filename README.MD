@@ -33,9 +33,48 @@ npm run build, npm start
 npm run test
 ```
 
+## Tools
+Rest clients for vs (request and response in visual studio code)
+Dotenv (manipulate environment variables)
+Express-validator (middlewares to validate data)
+Morgan (Http request logger middleware)
+Supertest (testing Http services)
+Jest (tests)
+Nodemon (autorestart server when change the code)
 ## Author
 
 👤 **JoseMiranda989**
+
+## Script migration JSON to SQL
+--Ejecutar paso 1
+CREATE DATABASE Cofaral 
+
+--Ejecutar paso 2
+use Cofaral 
+
+--Ejecutar paso 3
+Declare @JSON varchar(max)
+SELECT
+    @JSON = Bulkcolumn
+FROM
+    OPENROWSET (
+        BULK 'D:\LocalDev\DesafioCofaral\src\database\productos.json', 
+        SINGLE_CLOB
+    ) import
+SELECT
+    * INTO Productos
+FROM
+    OPENJSON (@JSON, '$.rows') WITH (
+        [sapcode] int,
+        [name] varchar(50),
+        [presentation] varchar(250),
+        [laboratorio] varchar(50),
+        [droga] varchar(50),
+        [tucuman] int,
+        [salta] int,
+        [chaco] int,
+        [precio] decimal(10, 2)
+    )
 
 * Website: https://cvjosemiranda.netlify.app/
 * Twitter: [@josemiranda989](https://twitter.com/josemiranda989)

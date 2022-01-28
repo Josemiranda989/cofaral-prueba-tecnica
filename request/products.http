@@ -1,4 +1,4 @@
- @api = http://localhost:3000/
+ @api = http://localhost:3000
 
 ### Todos los productos
 GET {{ api }}
@@ -19,14 +19,10 @@ Content-type: application/json
 }
 
 ### Detalle de producto
-GET {{ api }}/73062
-
-### Borrar un producto
-DELETE {{ api }}/21999
-
+GET {{ api }}/99
 
 ### Actualizar un producto
-PUT {{ api }}/899999
+PUT {{ api }}/99
 Content-type: application/json
 
 {
@@ -39,6 +35,9 @@ Content-type: application/json
     "chaco": 4,
     "precio": 300.87
 }
+
+### Borrar un producto
+DELETE {{ api }}/99
 
 ### Obtener total de Productos
 GET {{ api }}/total

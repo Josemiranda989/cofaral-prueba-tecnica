@@ -93,10 +93,7 @@ export const deleteProductBySapcode = async (req, res) => {
       .request()
       .input("sapcode", id)
       .query(queries.deleteProductBySapcode);
-    res.sendStatus(204).json({
-      msg: "Producto borrado correctamente",
-      status: 204
-    });
+    res.sendStatus(204)
   } catch (err) {
     res.status(500).send(err.message);
   }
