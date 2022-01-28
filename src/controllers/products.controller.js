@@ -1,12 +1,12 @@
 import { getConnection, sql, queries } from "../database";
+import { validationResult } from "express-validator"
 
 /* Todos los Productos */
 export const getProducts = async (req, res) => {
   try {
     const pool = await getConnection();
-    const result = await (
-      await pool.request().query(queries.getAllProducts)
-    ).recordset;
+    let result = await pool.request().query(queries.getAllProducts)
+    result = result.recordset;
     res.status(200).json({
       total: result.length,
       productos: result,
@@ -19,12 +19,18 @@ export const getProducts = async (req, res) => {
 };
 /* Crear producto */
 export const newProduct = async (req, res) => {
-  const { sapcode, name, presentation, laboratorio, droga } = req.body;
-  let { tucuman, salta, chaco, precio } = req.body;
+  const resultValidation = validationResult(req)
+  const { sapcode, name, presentation, laboratorio, droga, precio } = req.body;
+  let { tucuman, salta, chaco } = req.body;
 
-  if (!sapcode || !name || !precio) {
-    return res.status(400).json({ msg: "Por favor llena los campos" });
+  if (resultValidation.errors.length > 0) {
+    return res.status(400).json({
+      errors: resultValidation.mapped()
+    })
   }
+/*   if (!sapcode || !name || !precio) {
+    return res.status(400).json({ msg: "Por favor llena los campos" });
+  } */
 
   if (!tucuman) tucuman = 0;
   if (!salta) salta = 0;
@@ -169,7 +175,7 @@ export const getTotalProducts = async (req, res) => {
 export const getTotalProductsByLaboratory = async (req, res) => {
   try {
     const pool = await getConnection();
-    const result = await (
+    const result = (
       await pool.request().query(queries.getAllProducts)
     ).recordset;
 
@@ -182,11 +188,10 @@ export const getTotalProductsByLaboratory = async (req, res) => {
     let laboratory = [];
     let productsByLaboratory = [];
     let contador = 1;
-    let total = [];
-
+    
     for (let i = 0; i < laboratorys.length; i++) {
       if (laboratorys[i + 1] === laboratorys[i]) {
-        //console.log("se repite el laboratory " + laboratorys[i]);
+        //console.log("se repite " + laboratorys[i]);
         contador++;
       } else {
         laboratory.push(laboratorys[i]);
@@ -196,13 +201,14 @@ export const getTotalProductsByLaboratory = async (req, res) => {
     }
     //console.log(laboratory);
     //console.log(productsByLaboratory);
-    for (let i = 0; i < laboratory.length; i++) {
-      total.push(
-        "Laboratorio " + laboratory[i] + ": " + productsByLaboratory[i]
-      );
-    }
+   
+    let total={}
+    laboratory.forEach((key, i) => total[key] = productsByLaboratory[i]);
 
-    res.json(total);
+    res.status(200).json({
+      cantidad: total,
+      status:200
+    });
   } catch (err) {
     res.status(500);
     res.send(err.message);
