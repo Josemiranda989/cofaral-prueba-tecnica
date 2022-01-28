@@ -41,9 +41,6 @@ Morgan (Http request logger middleware)
 Supertest (testing Http services)
 Jest (tests)
 Nodemon (autorestart server when change the code)
-## Author
-
-👤 **JoseMiranda989**
 
 ## Script migration JSON to SQL
 --Ejecutar paso 1
@@ -75,7 +72,9 @@ FROM
         [chaco] int,
         [precio] decimal(10, 2)
     )
+## Author
 
+👤 **JoseMiranda989**
 * Website: https://cvjosemiranda.netlify.app/
 * Twitter: [@josemiranda989](https://twitter.com/josemiranda989)
 * Github: [@josemiranda989](https://github.com/josemiranda989)
