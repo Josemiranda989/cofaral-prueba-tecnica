@@ -13,25 +13,26 @@ import {
 } from "../controllers/products.controller";
 
 const router = Router();
- /* Todos los productos http://localhost:3000/productos */
-router.get("/productos", getProducts);
+/* Todos los productos http://localhost:3000/productos */
+ 
+router.get("/", getProducts);
 
-/* Crear producto http://localhost:3000/productos */
-router.post("/productos", validateCreate, newProduct);
+/* Crear producto http://localhost:3000/ */
+router.post("/", validateCreate, newProduct);
 
-/* Total de productos por laboratorio http://localhost:3000/productos/productos-por-laboratorio */
-router.get("/productos/productos-por-laboratorio", getTotalProductsByLaboratory);
+/* Total de productos por laboratorio http://localhost:3000/productos-por-laboratorio */
+router.get("/productos-por-laboratorio", getTotalProductsByLaboratory);
 
-/* Total de productos http://localhost:3000/productos/total */
-router.get("/productos/total", getTotalProducts);
+/* Total de productos http://localhost:3000/total */
+router.get("/total", getTotalProducts);
 
-/* Detalle de un producto http://localhost:3000/productos/:id */
-router.get("/productos/:id", getProductBySapcode);
+/* Detalle de un producto http://localhost:3000/:id */
+router.get("/:id", getProductBySapcode);
 
-/* Todos los productos http://localhost:3000/productos/:id */
-router.delete("/productos/:id", deleteProductBySapcode);
+/* Todos los productos http://localhost:3000/:id */
+router.delete("/:id", deleteProductBySapcode);
 
-/* Actualizar producto http://localhost:3000/productos/:id */
-router.put("/productos/:id", validateUpdate, updateProductBySapcode);
+/* Actualizar producto http://localhost:3000/:id */
+router.put("/:id", validateUpdate, updateProductBySapcode);
 
 export default router;

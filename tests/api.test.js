@@ -6,12 +6,12 @@ import app from "../src/app";
 describe("GET /productos", () => {
   //Debe responder codigo estado 200
   test("Debe devolver el codigo status 200", async () => {
-    const response = await request(app).get("/productos").send();
+    const response = await request(app).get("/").send();
     expect(response.statusCode).toBe(200);
   });
   //Debe devolver un JSON
   test("Debe devolver un objeto", async () => {
-    const response = await request(app).get("/productos").send({});
+    const response = await request(app).get("/").send({});
     expect(response.body).toBeInstanceOf(Object);
   });
 });
@@ -30,23 +30,23 @@ describe("POST /productos", () => {
       precio: 323.87,
     };
      test("Debe devolver el codigo status 200", async () => {
-    const response = await request(app).post("/productos").send(newProduct);
+    const response = await request(app).post("/").send(newProduct);
     expect(response.statusCode).toBe(200);
   });
     test("Debe devolver un content-type: application/json en el header", async () => {
-      const response = await request(app).post("/productos").send(newProduct);
+      const response = await request(app).post("/").send(newProduct);
       expect(response.headers["content-type"]).toEqual(
         expect.stringContaining("json")
       );
     });
     test("Debe devolver el sapcode del producto", async () => {
-      const response = await request(app).post("/productos").send(newProduct);
+      const response = await request(app).post("/").send(newProduct);
       expect(response.body.data).toBeDefined();
     });
   });
   describe("Con los campos vacíos del body", () => {
     test('Debe responde con el codigo de estado 400', async () => {
-      const response = await request(app).post('/productos').send({})
+      const response = await request(app).post('/').send({})
       expect(response.statusCode).toBe(400);
     })
   })
@@ -56,12 +56,12 @@ describe("POST /productos", () => {
 describe("GET /productos/:id", () => {
   //Debe responder codigo estado 200
   test("Debe devolver el codigo status 200", async () => {
-    const response = await request(app).get("/productos/999").send();
+    const response = await request(app).get("/999").send();
     expect(response.statusCode).toBe(200);
   });
   //Debe devolver un JSON
   test("Debe devolver un objeto", async () => {
-    const response = await request(app).get("/productos/999").send();
+    const response = await request(app).get("/999").send();
     expect(response.body).toBeInstanceOf(Object);
   });
 });
@@ -80,13 +80,13 @@ describe("PUT /productos", () => {
     };
      test("Debe devolver el codigo status 200", async () => {
     const response = await request(app)
-      .put("/productos/73060")
+      .put("/73060")
       .send(updateProduct);
     expect(response.statusCode).toBe(200);
   });
     test("Debe devolver un content-type: application/json en el header", async () => {
       const response = await request(app)
-        .put("/productos/73060")
+        .put("/73060")
         .send(updateProduct);
       expect(response.headers["content-type"]).toEqual(
         expect.stringContaining("json")
@@ -94,14 +94,14 @@ describe("PUT /productos", () => {
     });
     test("Debe devolver el producto actualizado", async () => {
       const response = await request(app)
-        .put("/productos/73060")
+        .put("/73060")
         .send(updateProduct);
       expect(response.body.data).toBeDefined();
     });
   });
   describe("Con los campos vacíos del body", () => {
     test('Debe responde con el codigo de estado 400', async () => {
-      const response = await request(app).put("/productos/73060").send({});
+      const response = await request(app).put("/73060").send({});
       expect(response.statusCode).toBe(400);
     })
   })
@@ -111,12 +111,12 @@ describe("PUT /productos", () => {
 describe("GET /productos/total", () => {
   //Debe responder codigo estado 200
   test("Debe devolver el codigo status 200", async () => {
-    const response = await request(app).get("/productos/total").send();
+    const response = await request(app).get("/total").send();
     expect(response.statusCode).toBe(200);
   });
   //Debe devolver un JSON
   test("Debe devolver un objeto", async () => {
-    const response = await request(app).get("/productos/total").send({});
+    const response = await request(app).get("/total").send({});
     expect(response.body).toBeInstanceOf(Object);
   });
 });
@@ -126,14 +126,14 @@ describe("GET /productos/productos-por-laboratorio", () => {
   //Debe responder codigo estado 200
   test("Debe devolver el codigo status 200", async () => {
     const response = await request(app)
-      .get("/productos/productos-por-laboratorio")
+      .get("/productos-por-laboratorio")
       .send();
     expect(response.statusCode).toBe(200);
   });
   //Debe devolver un JSON
   test("Debe devolver un objeto", async () => {
     const response = await request(app)
-      .get("/productos/productos-por-laboratorio")
+      .get("/productos-por-laboratorio")
       .send({});
     expect(response.body).toBeInstanceOf(Object);
   });
