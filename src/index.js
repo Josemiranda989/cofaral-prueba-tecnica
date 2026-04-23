@@ -1,13 +1,8 @@
-import app from "./app"
+import app from "./app";
 
+const port = app.get("port");
 
-app.listen(app.get('port'))
-
-console.log(
-  "server running on port",
-  app.get("port"),
-  "database",
-  process.env.DB_DATABASE
-);
-console.log('-');
-console.log(`click here http://localhost:${app.get('port')}`);
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+  console.log(`http://localhost:${port}`);
+});
