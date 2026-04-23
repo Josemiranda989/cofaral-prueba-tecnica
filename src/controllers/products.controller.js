@@ -1,37 +1,37 @@
 import { getConnection, sql, queries } from "../database";
-import { validationResult } from "express-validator"
+import { validationResult } from "express-validator";
+
+const handleError = (res, scope, err) => {
+  console.error(`[${scope}]`, err);
+  res.status(500).json({ error: "Internal server error", status: 500 });
+};
 
 /* Todos los Productos */
 export const getProducts = async (req, res) => {
   try {
     const pool = await getConnection();
-    let result = await pool.request().query(queries.getAllProducts)
-    result = result.recordset;
+    const result = (await pool.request().query(queries.getAllProducts)).recordset;
     res.status(200).json({
       total: result.length,
       productos: result,
       status: 200,
     });
   } catch (err) {
-    res.status(500);
-    res.send(err.message);
+    handleError(res, "getProducts", err);
   }
 };
+
 /* Crear producto */
 export const newProduct = async (req, res) => {
-  const resultValidation = validationResult(req)
-  const { sapcode, name, presentation, laboratorio, droga, precio } = req.body;
-  let { tucuman, salta, chaco } = req.body;
-
-  if (resultValidation.errors.length > 0) {
-    return res.status(400).json({
-      errors: resultValidation.mapped()
-    })
+  const resultValidation = validationResult(req);
+  if (!resultValidation.isEmpty()) {
+    return res.status(400).json({ errors: resultValidation.mapped() });
   }
 
-  if (!tucuman) tucuman = 0;
-  if (!salta) salta = 0;
-  if (!chaco) chaco = 0;
+  const { sapcode, name, presentation, laboratorio, droga, precio } = req.body;
+  const tucuman = req.body.tucuman ?? 0;
+  const salta = req.body.salta ?? 0;
+  const chaco = req.body.chaco ?? 0;
 
   try {
     const pool = await getConnection();
@@ -52,79 +52,91 @@ export const newProduct = async (req, res) => {
       msg: "Producto agregado correctamente",
       data: {
         codigo: sapcode,
-        name: name,
+        name,
         presentacion: presentation,
-        laboratorio: laboratorio,
-        droga: droga,
-        tucuman: tucuman,
-        salta: salta,
-        chaco: chaco,
-        precio: precio,
+        laboratorio,
+        droga,
+        tucuman,
+        salta,
+        chaco,
+        precio,
       },
       status: 200,
     });
   } catch (err) {
-    res.status(500).send(err.message);
+    handleError(res, "newProduct", err);
   }
 };
+
 /* Detalle de Producto */
 export const getProductBySapcode = async (req, res) => {
-  const { id } = req.params;
+  const resultValidation = validationResult(req);
+  if (!resultValidation.isEmpty()) {
+    return res.status(400).json({ errors: resultValidation.mapped() });
+  }
+
+  const sapcode = Number(req.params.id);
   try {
     const pool = await getConnection();
     const result = await pool
       .request()
-      .input("sapcode", id)
+      .input("sapcode", sql.Int, sapcode)
       .query(queries.getProductBySapcode);
-    res.status(200).json({
-      product: result.recordset[0],
-      status: 200,
-    });
+
+    const product = result.recordset[0];
+    if (!product) {
+      return res.status(404).json({ error: "Product not found", status: 404 });
+    }
+
+    res.status(200).json({ product, status: 200 });
   } catch (err) {
-    res.status(500).send(err.message);
+    handleError(res, "getProductBySapcode", err);
   }
 };
+
 /* Eliminar producto */
 export const deleteProductBySapcode = async (req, res) => {
-  const { id } = req.params;
+  const resultValidation = validationResult(req);
+  if (!resultValidation.isEmpty()) {
+    return res.status(400).json({ errors: resultValidation.mapped() });
+  }
+
+  const sapcode = Number(req.params.id);
   try {
     const pool = await getConnection();
-    await pool
+    const result = await pool
       .request()
-      .input("sapcode", id)
+      .input("sapcode", sql.Int, sapcode)
       .query(queries.deleteProductBySapcode);
-    res.sendStatus(204)
+
+    if (result.rowsAffected?.[0] === 0) {
+      return res.status(404).json({ error: "Product not found", status: 404 });
+    }
+
+    res.sendStatus(204);
   } catch (err) {
-    res.status(500).send(err.message);
+    handleError(res, "deleteProductBySapcode", err);
   }
 };
+
 /* Editar Producto */
 export const updateProductBySapcode = async (req, res) => {
   const resultValidation = validationResult(req);
-  const {
-    name,
-    presentation,
-    laboratorio,
-    droga,
-    tucuman,
-    salta,
-    chaco,
-    precio,
-  } = req.body;
-  const { id } = req.params;
-
-  if (resultValidation.errors.length > 0) {
-    return res.status(400).json({
-      errors: resultValidation.mapped(),
-    });
+  if (!resultValidation.isEmpty()) {
+    return res.status(400).json({ errors: resultValidation.mapped() });
   }
+
+  const sapcode = Number(req.params.id);
+  const { name, presentation, laboratorio, droga, precio } = req.body;
+  const tucuman = req.body.tucuman ?? 0;
+  const salta = req.body.salta ?? 0;
+  const chaco = req.body.chaco ?? 0;
 
   try {
     const pool = await getConnection();
-
-    await pool
+    const result = await pool
       .request()
-      .input("sapcode", sql.Int, id)
+      .input("sapcode", sql.Int, sapcode)
       .input("name", sql.VarChar, name)
       .input("presentation", sql.VarChar, presentation)
       .input("laboratorio", sql.VarChar, laboratorio)
@@ -135,26 +147,30 @@ export const updateProductBySapcode = async (req, res) => {
       .input("precio", sql.Decimal(10, 2), precio)
       .query(queries.updateProductBySapcode);
 
+    if (result.rowsAffected?.[0] === 0) {
+      return res.status(404).json({ error: "Product not found", status: 404 });
+    }
+
     res.status(200).json({
       msg: "Producto actualizado correctamente",
       data: {
-        codigo: id,
-        name: name,
+        codigo: sapcode,
+        name,
         presentacion: presentation,
-        laboratorio: laboratorio,
-        droga: droga,
-        tucuman: tucuman,
-        salta: salta,
-        chaco: chaco,
-        precio: precio,
+        laboratorio,
+        droga,
+        tucuman,
+        salta,
+        chaco,
+        precio,
       },
       status: 200,
     });
   } catch (err) {
-    res.status(500);
-    res.send(err.message);
+    handleError(res, "updateProductBySapcode", err);
   }
 };
+
 /* Contador de Productos */
 export const getTotalProducts = async (req, res) => {
   try {
@@ -165,49 +181,23 @@ export const getTotalProducts = async (req, res) => {
       status: 200,
     });
   } catch (err) {
-    res.status(500).send(err.message);
+    handleError(res, "getTotalProducts", err);
   }
 };
-/* Contador de Productos por Laboratorio*/
+
+/* Contador de Productos por Laboratorio */
 export const getTotalProductsByLaboratory = async (req, res) => {
   try {
     const pool = await getConnection();
-    const result = (
-      await pool.request().query(queries.getAllProducts)
-    ).recordset;
+    const rows = (await pool.request().query(queries.getAllProducts)).recordset;
 
-    let laboratorys = [];
-    for (let i = 0; i < result.length; i++) {
-      laboratorys.push(result[i].laboratorio);
-      laboratorys.sort();
-    }
+    const cantidad = rows.reduce((acc, { laboratorio }) => {
+      acc[laboratorio] = (acc[laboratorio] ?? 0) + 1;
+      return acc;
+    }, {});
 
-    let laboratory = [];
-    let productsByLaboratory = [];
-    let contador = 1;
-    
-    for (let i = 0; i < laboratorys.length; i++) {
-      if (laboratorys[i + 1] === laboratorys[i]) {
-        //console.log("se repite " + laboratorys[i]);
-        contador++;
-      } else {
-        laboratory.push(laboratorys[i]);
-        productsByLaboratory.push(contador);
-        contador = 1;
-      }
-    }
-    //console.log(laboratory);
-    //console.log(productsByLaboratory);
-   
-    let total={}
-    laboratory.forEach((key, i) => total[key] = productsByLaboratory[i]);
-
-    res.status(200).json({
-      cantidad: total,
-      status:200
-    });
+    res.status(200).json({ cantidad, status: 200 });
   } catch (err) {
-    res.status(500);
-    res.send(err.message);
+    handleError(res, "getTotalProductsByLaboratory", err);
   }
 };

@@ -1,5 +1,5 @@
 import sql from "mssql";
-import config from "../config"
+import config from "../config";
 
 const dbSettings = {
   user: config.dbUser,
@@ -8,17 +8,18 @@ const dbSettings = {
   database: config.dbDatabase,
   options: {
     encrypt: true,
-    trustServerCertificate: true
-  }
+    trustServerCertificate: process.env.NODE_ENV !== "production",
+  },
 };
 
 export async function getConnection() {
   try {
-    const pool = await sql.connect(dbSettings)
-    return pool
+    const pool = await sql.connect(dbSettings);
+    return pool;
   } catch (err) {
-    console.error(error);
+    console.error("Database connection failed:", err);
+    throw new Error("Database connection failed");
   }
 }
 
-export { sql }
+export { sql };
